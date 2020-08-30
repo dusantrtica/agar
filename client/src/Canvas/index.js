@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import useCanvas from './useCanvas';
+import './index.scss';
 
 const inititalDraw = (ctx) => {}
 

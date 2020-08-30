@@ -3,6 +3,10 @@ import logo from './logo.svg';
 import './App.css';
 import Canvas from './Canvas';
 
+const Score = () => <div>Score</div>;
+const LeaderBoard = () => <div>LeaderBoard</div>
+const GameMessage = () => <div>Game Message</div>
+
 function App() {
 
   const draw = (ctx, frameCount) => {
@@ -12,7 +16,7 @@ function App() {
         ctx.arc(50, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
         ctx.fill()
     }
-  return <Canvas draw={draw}/>
+  return <div><Canvas draw={draw}/> <Score /> <LeaderBoard /> <GameMessage /> </div>
 }
 
 export default App;
