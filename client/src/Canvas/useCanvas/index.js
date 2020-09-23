@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 
-const useCanvas = (draw) => {
+const useCanvas = ({draw, onMouseMove}) => {
     const canvasRef = useRef(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
+        canvas.addEventListener('mousemove', (e) => onMouseMove(e, canvas));
         const context = canvas.getContext('2d');
 
         let frameCount = 0;
@@ -19,9 +20,10 @@ const useCanvas = (draw) => {
         render();
 
         return () => {
+            canvas.removeEventListener('mousemove', onMouseMove);
             window.cancelAnimationFrame(animationFrameId);
         }
-    }, [draw]);
+    }, [draw, onMouseMove]);
 
     return canvasRef;
 }

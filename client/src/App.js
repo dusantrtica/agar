@@ -1,22 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 import Canvas from './Canvas';
+import { mouseMoveHandler } from './util';
 
 const Score = () => <div>Score</div>;
 const LeaderBoard = () => <div>LeaderBoard</div>
 const GameMessage = () => <div>Game Message</div>
 
 function App() {
+  const [playerPos, setPlayerPos] = useState({
+      locX: Math.floor(500*Math.random()+10),
+      locY: Math.floor(500*Math.random()+10)
+  });
+
+  const handleMouseMove = (e, canvas) => {
+    const updatedPlayer = mouseMoveHandler(e, playerPos, canvas)
+    setPlayerPos(updatedPlayer);
+  }
 
   const draw = (ctx, frameCount) => {
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-        ctx.fillStyle = '#000000'
-        ctx.beginPath()
-        ctx.arc(50, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
-        ctx.fill()
+  //   let randomX = Math.floor(500*Math.random()+10);
+  // let randomY = Math.floor(500*Math.random()+10);
+
+    ctx.canvas.width  = window.innerWidth;
+    ctx.canvas.height = window.innerHeight;
+
+    // Init translate, set to default
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    const camX = -playerPos.locX + ctx.canvas.width / 2;
+    const camY = -playerPos.locY + ctx.canvas.height  /2;
+    ctx.translate(camX, camY);
+
+        ctx.beginPath();
+        ctx.fillStyle = "rgb(255,0,0)";
+        ctx.arc(playerPos.locX, playerPos.locY, 10, 0, Math.PI*2);
+        ctx.arc(200,200, 10, 0, Math.PI *2);
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgb(0,255,0)';
+        ctx.stroke();
     }
-  return <div><Canvas draw={draw}/> <Score /> <LeaderBoard /> <GameMessage /> </div>
+  return <div className="App"><Canvas draw={draw} onMouseMove={handleMouseMove}/> <Score /> <LeaderBoard /> <GameMessage /> </div>
 }
 
 export default App;
