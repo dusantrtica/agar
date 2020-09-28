@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Canvas from './Canvas';
 import { mouseMoveHandler } from './util';
+import io from 'socket.io-client';
 
 const Score = () => <div>Score</div>;
 const LeaderBoard = () => <div>LeaderBoard</div>
@@ -12,6 +13,23 @@ function App() {
       locX: Math.floor(500*Math.random()+10),
       locY: Math.floor(500*Math.random()+10)
   });
+
+  const [socket, setSocket] = useState();
+
+  useEffect(() => {
+    const s = io('http://localhost:8000');
+    if(s) {
+      setSocket(s);
+    }    
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('init', (data) => {
+        console.log(data.orbs);
+      })
+    }
+  }, [socket]);
 
   const handleMouseMove = (e, canvas) => {
     const updatedPlayer = mouseMoveHandler(e, playerPos, canvas)
