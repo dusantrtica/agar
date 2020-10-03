@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import Canvas from './Canvas';
 import { mouseMoveHandler } from './util';
@@ -8,13 +8,18 @@ const Score = () => <div>Score</div>;
 const LeaderBoard = () => <div>LeaderBoard</div>;
 const GameMessage = () => <div>Game Message</div>;
 
+var i = 0;
+
 function App() {
   const [orbs, setOrbs] = useState([]);
   const [players, setPlayers] = useState([]);
 
   const [socket, setSocket] = useState();
   const [player, setPlayer] = useState({ locX: 0, locY: 0 });
-  const [{ xVector, yVector }, setVector] = useState({});
+  const [{ xVector, yVector }, setVector] = useState({
+    xVector: 0,
+    yVector: 0,
+  });
 
   useEffect(() => {
     const s = io('http://localhost:8000');
@@ -23,29 +28,30 @@ function App() {
     }
   }, []);
 
+  const sendVectors = () => {};
+
   useEffect(() => {
+    console.log('Called useEffect');
+
     if (socket) {
       socket.emit('init', {
         playerName: 'Dusan',
       });
       socket.on('initReturn', (data) => {
         setOrbs(data.orbs);
-        setInterval(() => {
-          socket.emit('tick', {
-            xVector,
-            yVector,
-          });
-        }, 33);
+        setInterval(sendVectors, 500);
       });
       socket.on('tock', (data) => {
         setPlayers(data.players);
         setPlayer(data.player);
       });
     }
-  }, [socket, xVector, yVector]);
+  }, [socket]); // eslint-disable-line
 
   const handleMouseMove = (e, canvas) => {
     const updatedVector = mouseMoveHandler(e, canvas);
+    i += 1;
+    // console.log({ updatedVector }, i);
     setVector({ ...updatedVector });
   };
 

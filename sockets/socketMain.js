@@ -38,14 +38,16 @@ io.on('connection', (socket) => {
         playerX: player.playerData.locX,
         playerY: player.playerData.locY,
       });
-    }, 33); // 30fps
+    }, 500); // 30fps
 
     socket.emit('initReturn', { orbs });
     players.push(player);
   });
 
   socket.on('tick', (data) => {
-    const { speed } = player.playerConfig;
+    // const { speed } = player.playerConfig;
+    const speed = 6;
+    console.log({ data });
     const xV = (player.playerConfig.xVector = data.xVector);
     const yV = (player.playerConfig.yVector = data.yVector);
 
